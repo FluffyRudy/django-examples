@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Client</title>
+    <script>
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('http://127.0.0.1:8000/tokens/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('access_token', data.access);
+                document.getElementById('login-status').textContent = 'Logged in successfully!';
+            } else {
+                document.getElementById('login-status').textContent = 'Login failed: ' + data.detail;
+            }
+        }
+
+        async function getProtectedResource() {
+            const token = localStorage.getItem('access_token');
+
+            const response = await fetch('http://127.0.0.1:8000/api/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                document.getElementById('protected-resource').textContent = JSON.stringify(data);
+            } else {
+                document.getElementById('protected-resource').textContent = 'Error: ' + data.detail;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Simple Client</h1>
+    
+    <div>
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p id="login-status"></p>
+    </div>
+
+    <div>
+        <h2>Protected Resource</h2>
+        <button onclick="getProtectedResource()">Get Protected Resource</button>
+        <pre id="protected-resource"></pre>
+    </div>
+</body>
+</html>
