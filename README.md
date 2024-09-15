@@ -11,7 +11,8 @@ This project showcases examples of using Django Rest Framework (DRF).
 ### Note
 
 **Dont forget to set email backend through .env environment file, otherwise email confirmation will not work**
-**Relevent email setting in settings.py**
+
+#### Relevent email setting in settings.py
 
 ```python
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
